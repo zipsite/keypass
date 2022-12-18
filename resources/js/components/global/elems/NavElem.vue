@@ -1,6 +1,7 @@
 <template>
     <div class="you-nav-elem">
         <div class="you-state-layer">
+            <span class="icon-24">{{ icon }}</span>
             <p class="you-title-medium">
                 {{ text }}
             </p>
@@ -16,22 +17,14 @@ export default {
             type: String,
             default: 'button'
         },
-        withIcon: {
-            type: Boolean,
-            default: false
-        },
         icon: {
             type: String,
             default: ""
         },
-        round: {
+        active: {
             type: Boolean,
-            default: true
-        },
-        type: {
-            type: String,
-            default: "tone"
-        },
+            default: false
+        }
     },
     data() {
         return {
@@ -39,9 +32,7 @@ export default {
         }
     },
     methods: {
-        initData() {
-            // console.log(this.text)
-        }
+
     },
     mounted() {
     }

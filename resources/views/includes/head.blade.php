@@ -8,6 +8,7 @@
 	<style>
 		@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
 	</style>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,200" />
 	<link rel="stylesheet" href="{{ mix("css/app.css") }}">
 	@routes
 </head>

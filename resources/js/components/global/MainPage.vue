@@ -5,8 +5,8 @@
             <Button text="Выйти"></Button>
         </div>
         <div class="nav">
-            <NavElem text="Клиенты"></NavElem>
-            <NavElem text="Шаблоны"></NavElem>
+            <NavElem text="Клиенты" icon="person"></NavElem>
+            <NavElem text="Шаблоны" icon="draft"></NavElem>
         </div>
         <div class="main">
             <div>
