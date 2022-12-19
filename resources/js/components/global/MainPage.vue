@@ -1,12 +1,12 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper-main-page">
         <div class="header">
             <p class="you-headline-small">Keypass</p>
-            <Button text="Выйти"></Button>
+            <Button text="Выйти" type="text" @b-click="logout"></Button>
         </div>
         <div class="nav">
-            <NavElem text="Клиенты" icon="person"></NavElem>
-            <NavElem text="Шаблоны" icon="draft"></NavElem>
+            <NavElem v-for="elem in navElems" :key="elem.id" v-bind="elem" @nav-elem="onNavElemClick"></NavElem>
+
         </div>
         <div class="main">
             <div>
@@ -15,8 +15,36 @@
         </div>
     </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            navElems: [
+            {id: 0, text: "Клиенты", icon: "person", active: true, path: '/app/client'},
+            {id: 1, text: "Шаблоны", icon: "draft", active: false, path: '/app/template'},
+            ]
+        }
+    },
+    methods: {
+        onNavElemClick(e) {
+            for (let elem of this.navElems) {
+                elem.active = false
+            }
+            this.navElems[e].active = true;
+            this.$router.push(this.navElems[e].path)
+        },
+        logout() {
+            localStorage.setItem("token", "");
+            localStorage.setItem("redirect", window.location.pathname);
+            this.$router.push({ name: 'login' })
+        },
+    }
+}
+</script>
+
 <style>
-.wrapper {
+.wrapper-main-page {
     width: 100%;
     height: 100%;
     display: grid;

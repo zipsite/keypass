@@ -25,10 +25,6 @@ export const nativeroutes = [
         children: [
             {
                 path: 'client',
-                component: Components.Clients,
-            },
-            {
-                path: 'client/:clientId',
                 component: Components.Client,
             },
             {
@@ -37,7 +33,7 @@ export const nativeroutes = [
             },
             {
                 path: 'client/:clientId/access',
-                component: Components.Accesses,
+                component: Components.Access,
             },
             {
                 path: 'client/:clientId/access/:accessId/edit',
@@ -48,8 +44,8 @@ export const nativeroutes = [
                 component: Components.Template,
             },
             {
-                path: 'template/:templateId',
-                component: Components.Template,
+                path: 'template/:templateId/edit',
+                component: Components.TemplateEdit,
             },
         ]
     },

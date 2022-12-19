@@ -1,11 +1,28 @@
 <template>
     <div class="table-elem">
         <div class="table-elem-text">
-            <p class="you-title-medium">ООО ВОТЕЛ</p>
+            <p class="you-title-medium">{{ text }}</p>
         </div>
-        <Button></Button>
+        <slot></slot>
     </div>
 </template>
+
+<script>
+export default {
+    props: {
+        id: {
+            type: Number,
+            default: 0
+        },
+        text: {
+            type: String,
+            default: ""
+        }
+    },
+    methods: {
+    }
+}
+</script>
 
 <style>
 .table-elem {

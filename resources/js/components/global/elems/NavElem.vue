@@ -1,5 +1,5 @@
 <template>
-    <div class="you-nav-elem">
+    <div class="you-nav-elem" @click="$emit('nav-elem', id)">
         <div class="you-state-layer">
             <span class="icon-24">{{ icon }}</span>
             <p class="you-title-medium">
@@ -10,9 +10,11 @@
 </template>
 
 <script>
-
 export default {
     props: {
+        id: {
+            type: Number
+        },
         text: {
             type: String,
             default: 'button'
@@ -32,7 +34,17 @@ export default {
         }
     },
     methods: {
-
+        
+    },
+    computed: {
+    //     isActive() {
+    //         if (this.active === true) {
+    //             return 'you-nav-elem active'
+    //         }
+    //         else{
+    //             return 'you-nav-elem'
+    //         }
+    //     }
     },
     mounted() {
     }
@@ -43,13 +55,16 @@ export default {
 .you-nav-elem {
     user-select: none;
     cursor: pointer;
-    background: var(--primary-container);
     color: var(--on-primary-container);
     border-radius: 100px;
     overflow: hidden;
 }
 
-.you-nav-elem>.you-state-layer {
+/* .you-nav-elem.active {
+    background: var(--primary-container);
+} */
+
+.you-nav-elem > div {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -57,7 +72,7 @@ export default {
     gap: 12px;
 }
 
-.you-button>.you-state-layer:hover {
+.you-nav-elem>.you-state-layer:hover {
     background: var(--opacity-25);
 }
 </style>
