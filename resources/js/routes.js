@@ -28,24 +28,36 @@ export const nativeroutes = [
                 component: Components.Client,
             },
             {
-                path: 'client/:clientId/edit',
-                component: Components.ClientEdit,
+                path: 'client/action/:action',
+                component: Components.ClientAction,
+            },
+            {
+                path: 'client/:clientId/action/:action',
+                component: Components.ClientAction,
             },
             {
                 path: 'client/:clientId/access',
                 component: Components.Access,
             },
             {
-                path: 'client/:clientId/access/:accessId/edit',
-                component: Components.AccessEdit,
+                path: 'client/:clientId/access/action/:action',
+                component: Components.AccessAction,
+            },
+            {
+                path: 'client/:clientId/access/:accessId/action/:action',
+                component: Components.AccessAction,
             },
             {
                 path: 'template',
                 component: Components.Template,
             },
             {
-                path: 'template/:templateId/edit',
-                component: Components.TemplateEdit,
+                path: 'template/action/:action',
+                component: Components.TemplateAction,
+            },
+            {
+                path: 'template/:templateId/action/:action',
+                component: Components.TemplateAction,
             },
         ]
     },

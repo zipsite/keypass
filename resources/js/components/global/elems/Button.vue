@@ -42,9 +42,6 @@ export default {
         }
     },
     methods: {
-        initData() {
-            // console.log(this.text)
-        }
     },
     computed: {
         buttonStyle() {
@@ -71,7 +68,6 @@ export default {
             }
             return result
         }
-
     }
 }
 </script>

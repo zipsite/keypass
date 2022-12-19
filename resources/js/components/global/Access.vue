@@ -1,18 +1,19 @@
 <template>
     <div class="activity">
         <div class="activity-header">
-            <div class="activity-header-place-text">
+            <IconButton icon="close" @b-i-click="onBack"></IconButton>
+            <div class="activity-header-place-text">    
                 <p class="you-title-large">
-                    Клиенты
+                    {{ client.name }}
                 </p>
             </div>
         </div>
         <div class="activity-content">
-            <Button text="Добавить" :round="false" :withIcon="true" icon="add"></Button>
+            <Button text="Добавить" :round="false" :withIcon="true" icon="add" @b-click="addAccess"></Button>
             <div class="table">
-                <TableElem v-for="(elem, index) in clients" :id="elem.id" :text="elem.name">
-                    <IconButton :idData="{id: index, type: 'edit'}" icon="edit" @b-i-click="clickButton"></IconButton>
-                    <Button :idData="{id: index, type: 'open'}" text="Открыть" @b-click="clickButton"></Button>
+                <TableElem v-for="(elem, index) in accesses" :key="index" :id="elem.id" :text="elem.name">
+                    <IconButton :idData="{id: index}" icon="edit" @b-i-click="editAccess"></IconButton>
+                    <Button :idData="{id: index}" text="Войти" @b-click="signAccess"></Button>
                 </TableElem>
             </div>
         </div>
@@ -20,31 +21,45 @@
 </template>
 
 <script>
+import IconButton from './elems/IconButton.vue';
 export default {
-    data(){
+    data() {
         return {
-            clients: []
-        }
+            client: [],
+            accesses: []
+        };
     },
     methods: {
-        getClient() {
-            var url = '/api/client'
+        getDataApi() {
+            let url = `/api/client/${this.$route.params.clientId}`;
             this.axios.get(url).then(response => {
-                this.clients = response.data
-            }).catch(error => { this.$noty.info('Неудалось получить клиентов'); });
+                this.client = response.data;
+            }).catch(error => { this.$noty.info("Неудалось получить клиента"); });
+            url = `/api/client/${this.$route.params.clientId}/access`;
+            this.axios.get(url).then(response => {
+                this.accesses = response.data;
+            }).catch(error => { this.$noty.info("Неудалось получить доступы клиента"); });
         },
-        clickButton(e){
-            if (e.type == 'edit') {
-                console.log(this.clients[e.id].name)
-            }
-            else if (e.type == 'open') {
-                console.log(this.clients[e.id].id)
-            }
+        signAccess(e) {
+            let url = `/api/client/${this.$route.params.clientId}/access/${this.accesses[e.id].id}/compil`;
+            this.axios.get(url).then(response => {
+                console.log(response.data);
+            }).catch(error => { this.$noty.info("Неудалось получить клиента"); });
+        },
+        editAccess(e) {
+            this.$router.push(`/app/client/${this.$route.params.clientId}/access/${this.accesses[e.id].id}/action/edit`)
+        },
+        addAccess() {
+            this.$router.push(`/app/client/${this.$route.params.clientId}/access/action/create`)
+        },
+        onBack() {
+            this.$router.push('/app/client/')
         }
     },
     created() {
-        this.getClient()
-    }
+        this.getDataApi();
+    },
+    components: { IconButton }
 }
 </script>
 

@@ -8,11 +8,11 @@
             </div>
         </div>
         <div class="activity-content">
-            <Button text="Добавить" :round="false" :withIcon="true" icon="add"></Button>
+            <Button text="Добавить" :round="false" :withIcon="true" icon="add" @b-click="addClient"></Button>
             <div class="table">
-                <TableElem v-for="(elem, index) in clients" :id="elem.id" :text="elem.name">
-                    <IconButton :idData="{id: index, type: 'edit'}" icon="edit" @b-i-click="clickButton"></IconButton>
-                    <Button :idData="{id: index, type: 'open'}" text="Открыть" @b-click="clickButton"></Button>
+                <TableElem v-for="(elem, index) in clients" :key="index" :id="elem.id" :text="elem.name">
+                    <IconButton :idData="{ id: index }" icon="edit" @b-i-click="editClient"></IconButton>
+                    <Button :idData="{ id: index }" text="Открыть" @b-click="openClient"></Button>
                 </TableElem>
             </div>
         </div>
@@ -21,7 +21,7 @@
 
 <script>
 export default {
-    data(){
+    data() {
         return {
             clients: []
         }
@@ -33,13 +33,14 @@ export default {
                 this.clients = response.data
             }).catch(error => { this.$noty.info('Неудалось получить клиентов'); });
         },
-        clickButton(e){
-            if (e.type == 'edit') {
-                console.log(this.clients[e.id].name)
-            }
-            else if (e.type == 'open') {
-                console.log(this.clients[e.id].id)
-            }
+        openClient(e) {
+            this.$router.push(`/app/client/${this.clients[e.id].id}/access`)
+        },
+        editClient(e) {
+            this.$router.push(`/app/client/${this.clients[e.id].id}/action/edit`)
+        },
+        addClient() {
+            this.$router.push('/app/client/action/create')
         }
     },
     created() {

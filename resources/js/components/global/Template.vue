@@ -8,10 +8,10 @@
             </div>
         </div>
         <div class="activity-content">
-            <Button text="Добавить" :round="false" :withIcon="true" icon="add"></Button>
+            <Button text="Добавить" :round="false" :withIcon="true" icon="add" @b-click="addTemplate"></Button>
             <div class="table">
-                <TableElem v-for="(elem, index) in clients" :id="elem.id" :text="elem.name">
-                    <IconButton :idData="{id: index, type: 'edit'}" icon="edit" @b-i-click="clickButton"></IconButton>
+                <TableElem v-for="(elem, index) in templates" :key="index" :id="elem.id" :text="elem.name">
+                    <IconButton :idData="{id: index}" icon="edit" @b-i-click="editTemplate"></IconButton>
                 </TableElem>
             </div>
         </div>
@@ -22,27 +22,25 @@
 export default {
     data(){
         return {
-            clients: []
+            templates: []
         }
     },
     methods: {
-        getClient() {
+        getTemplate() {
             var url = '/api/sample'
             this.axios.get(url).then(response => {
-                this.clients = response.data
+                this.templates = response.data
             }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
         },
-        clickButton(e){
-            if (e.type == 'edit') {
-                console.log(this.clients[e.id].name)
-            }
-            else if (e.type == 'open') {
-                console.log(this.clients[e.id].id)
-            }
+        editTemplate(e) {
+            this.$router.push(`/app/template/${this.templates[e.id].id}/action/edit`)
+        },
+        addTemplate() {
+            this.$router.push('/app/template/action/create')
         }
     },
     created() {
-        this.getClient()
+        this.getTemplate()
     }
 }
 </script>
