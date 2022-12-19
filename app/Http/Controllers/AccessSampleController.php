@@ -86,4 +86,12 @@ class AccessSampleController extends Controller
         $sample->delete();
         return response()->json($result);
     }
+
+    public function valid($id) {
+        $sample = AccessSample::find($id);
+        $data = json_decode($sample->data, true);
+        $struct = json_decode($sample->access_type->data, true);
+        $result = (new Validator)->run($struct, $data, $sample->name);
+        return response()->json($result);
+    }
 }
