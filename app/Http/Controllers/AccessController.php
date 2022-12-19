@@ -70,7 +70,7 @@ class AccessController extends Controller
         $sample = $access->access_sample->data;
 
         foreach ($payloads as $key => $payload) {
-            $regex =  '/'."#{$key}".'/';
+            $regex =  '/'."%{$key}%".'/';
             $sample = preg_replace_callback($regex, function ($match) use ($key, $payload) {
                 return "{$payload}";
             }, $sample);
