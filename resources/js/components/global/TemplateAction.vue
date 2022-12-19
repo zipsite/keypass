@@ -64,8 +64,7 @@ export default {
                     type_id: this.objectData.type_id,
                     data: JSON.parse(this.objectData.data)
                 }).then(response => {
-                    console.log(response.data)
-                    // this.onBack()
+                    this.onBack()
                 }).catch(error => {
                     this.$noty.info('Не удалось создать шаблон');
                 });
