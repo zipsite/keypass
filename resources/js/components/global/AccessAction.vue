@@ -11,7 +11,10 @@
         <div class="activity-content">
             <GroupInputs label="Основное">
                 <Input v-model="objectData.name" label="Имя"></Input>
-                <Input v-model="objectData.sample_id" label="id шаблона"></Input>
+                <Selector v-model="selectTypeIndex" @input="loadAccessTemplate" label="Выбор типа" :variants="types">
+                </Selector>
+                <Selector v-model="selectTemplateIndex" @input="setSampleId" label="Выбор шаблона"
+                    :variants="templates"></Selector>
                 <GroupInputs label="Данные для заполнения">
                     <textarea v-model="objectData.data" class="cos-input"></textarea>
                 </GroupInputs>
@@ -25,9 +28,17 @@
 </template>
 
 <script>
+import { types } from 'util'
+
 export default {
     data() {
         return {
+            types: [{ id: 1, name: ' ' }],
+            templates: [{ id: 1, name: ' ' }],
+
+            selectTypeIndex: 0,
+            selectTemplateIndex: 0,
+
             objectData: {},
             action: ''
         }
@@ -39,12 +50,50 @@ export default {
         setAction() {
             this.action = this.$route.params.action
         },
+        loadAccessType() {
+            var url = `/api/type/`
+            this.axios.get(url).then(response => {
+                this.types = response.data
+            }).catch(error => { this.$noty.info('Неудалось получить типы'); });
+        },
+        loadAccessTemplate() {
+            var url = `/api/type/${this.types[this.selectTypeIndex].id}/sample`
+            this.axios.get(url).then(response => {
+                this.templates = response.data
+            }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
+        },
+        setParams(sample) {
+            var url = `/api/sample/${sample}`
+            this.axios.get(url).then(response => {
+                for (let i = 0; i < this.types.length; i++) {
+                    if (this.types[i].id == response.data.type_id) {
+
+                        this.selectTypeIndex = i;
+
+                        var url = `/api/type/${this.types[this.selectTypeIndex].id}/sample`
+                        this.axios.get(url).then(response => {
+                            this.templates = response.data
+                            for (let i = 0; i < this.templates.length; i++) {
+                                if (this.templates[i].id == this.objectData.sample_id) {
+                                    console.log(i)
+                                    this.selectTemplateIndex = i;
+                                }
+                            }
+                        }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
+                    }
+                }
+            }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
+        },
+        setSampleId() {
+            this.objectData.sample_id = this.templates[this.selectTemplateIndex].id;
+        },
         loadAccess() {
             if (this.action == 'edit') {
                 var url = `/api/client/${this.$route.params.clientId}/access/${this.$route.params.accessId}`
                 this.axios.get(url).then(response => {
                     this.objectData = response.data
                     this.objectData.data = JSON.stringify(response.data.data)
+                    this.setParams(this.objectData.sample_id)
                 }).catch(error => { this.$noty.info('Неудалось получить доступ'); });
             }
             else if (this.action == 'create') {
@@ -52,7 +101,7 @@ export default {
                 this.objectData = {
                     name: '',
                     client_id: this.$route.params.clientId,
-                    sample_id: '',
+                    sample_id: 0,
                     data: ''
                 }
             }
@@ -106,7 +155,8 @@ export default {
     created() {
         this.setAction()
         this.loadAccess()
-
+        this.loadAccessType()
+        this.loadAccessTemplate()
     }
 }
 </script>
@@ -115,10 +165,12 @@ export default {
 .activity {
     border: 4px solid var(--primary-container);
 }
+
 .cos-input {
     width: 100%;
     resize: vertical;
 }
+
 .activity-header {
     display: flex;
     flex-direction: row;

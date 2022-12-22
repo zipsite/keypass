@@ -24,6 +24,16 @@ class AccessTypeController extends Controller
         return response()->json($result);
     }
 
+    public function showSample($id) {
+        $samples = AccessType::find($id)->access_samples;
+
+        $result = [];
+        foreach($samples as $sample){
+            array_push($result, $sample->only('id', 'name'));
+        }
+        return response()->json($result);
+    }
+
     public function store(Request $request) {
         $input = $request->all();
         $type = AccessType::create([

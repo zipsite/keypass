@@ -31,8 +31,11 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('/client', 'ClientController');
     Route::apiResource('/sample', 'AccessSampleController');
     Route::get('/sample/{sample}/valid', 'AccessSampleController@valid');
+
     Route::get('/type', 'AccessTypeController@index');
     Route::get('/type/{type}', 'AccessTypeController@show');
+    Route::get('/type/{type}/sample', 'AccessTypeController@showSample');
+
     Route::apiResource('/client/{client}/access', 'AccessController');
     Route::get('/client/{client}/access/{id}/compil', 'AccessController@compil');
 });
