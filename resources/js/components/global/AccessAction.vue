@@ -11,7 +11,7 @@
         <div class="activity-content">
             <GroupInputs label="Основное">
                 <Input v-model="objectData.name" label="Имя"></Input>
-                <Selector v-model="selectTypeIndex" @input="loadAccessTemplate" label="Выбор типа" :variants="types">
+                <Selector v-model="selectTypeIndex" @input="loadAccessTypeTemplates" label="Выбор типа" :variants="types">
                 </Selector>
                 <Selector v-model="selectTemplateIndex" @input="setSampleId" label="Выбор шаблона"
                     :variants="templates"></Selector>
@@ -56,12 +56,13 @@ export default {
                 this.types = response.data
             }).catch(error => { this.$noty.info('Неудалось получить типы'); });
         },
-        loadAccessTemplate() {
+        loadAccessTypeTemplates() {
             var url = `/api/type/${this.types[this.selectTypeIndex].id}/sample`
             this.axios.get(url).then(response => {
                 this.templates = response.data
             }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
         },
+                
         setParams(sample) {
             var url = `/api/sample/${sample}`
             this.axios.get(url).then(response => {
@@ -156,7 +157,7 @@ export default {
         this.setAction()
         this.loadAccess()
         this.loadAccessType()
-        this.loadAccessTemplate()
+        this.loadAccessTypeTemplates()
     }
 }
 </script>
