@@ -15,7 +15,7 @@
             <SelectorListElem 
             v-for="(elem, index) in variants"
             :key="index"
-            :idData="{id: elem.id}"
+            :idData="{id: index}"
             :text="elem.name"
             :active="index == value ? true : false"
             @l-e-click="$emit('input', index)"

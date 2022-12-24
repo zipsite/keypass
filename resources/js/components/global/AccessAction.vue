@@ -11,12 +11,13 @@
         <div class="activity-content">
             <GroupInputs label="Основное">
                 <Input v-model="objectData.name" label="Имя"></Input>
-                <Selector v-model="selectTypeIndex" @input="loadAccessTypeTemplates" label="Выбор типа" :variants="types">
+                <Selector v-model="selectTypeIndex" @input="loadAccessTypeTemplates" label="Выбор типа"
+                    :variants="types">
                 </Selector>
-                <Selector v-model="selectTemplateIndex" @input="setSampleId" label="Выбор шаблона"
+                <Selector v-model="selectTemplateIndex" @input="loadAccessTemplate" label="Выбор шаблона"
                     :variants="templates"></Selector>
-                <GroupInputs label="Данные для заполнения">
-                    <textarea v-model="objectData.data" class="cos-input"></textarea>
+                <GroupInputs v-if="dataField[0] != 'nodata'" label="Данные для заполнения">
+                    <Input v-for="(elem, index) in dataField" :key="index" v-model="objectData.data[elem]" :label="elem" ></Input>
                 </GroupInputs>
                 <Button text="Сохранить" @b-click="addAccess"></Button>
             </GroupInputs>
@@ -35,6 +36,9 @@ export default {
         return {
             types: [{ id: 1, name: ' ' }],
             templates: [{ id: 1, name: ' ' }],
+            currentTemplate: {},
+
+            dataField: ["nodata"],
 
             selectTypeIndex: 0,
             selectTemplateIndex: 0,
@@ -50,7 +54,53 @@ export default {
         setAction() {
             this.action = this.$route.params.action
         },
-        loadAccessType() {
+        loadAccess() {
+            if (this.action == 'edit') {
+                var url = `/api/client/${this.$route.params.clientId}/access/${this.$route.params.accessId}`
+                this.axios.get(url).then(response => {
+                    this.objectData = response.data
+                    this.setParams(this.objectData.sample_id)
+                }).catch(error => { this.$noty.info('Неудалось получить доступ'); });
+            }
+            else if (this.action == 'create') {
+                this.objectData = {
+                    name: '',
+                    client_id: this.$route.params.clientId,
+                    sample_id: 1,
+                    data: {}
+                }
+                this.setParams(this.objectData.sample_id)
+            }
+        },
+        setParams(sample) {
+            var url = `/api/sample/${sample}`
+            this.axios.get(url).then(response => {
+                this.currentTemplate = response.data
+
+                let stringData = JSON.stringify(this.currentTemplate.data)
+                let arrFileds = stringData.match(/(?<=%)\w+(?=%)/g);
+
+                this.dataField = arrFileds;
+
+                for (let i = 0; i < this.types.length; i++) {
+                    if (this.types[i].id == response.data.type_id) {
+
+                        this.selectTypeIndex = i;
+
+                        var url = `/api/type/${this.types[this.selectTypeIndex].id}/sample`
+                        this.axios.get(url).then(response => {
+                            this.templates = response.data
+                            for (let i = 0; i < this.templates.length; i++) {
+                                if (this.templates[i].id == this.objectData.sample_id) {
+                                    this.selectTemplateIndex = i;
+                                }
+                            }
+                        }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
+                    }
+                }
+            }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
+        },
+        loadAccessTypes() {
             var url = `/api/type/`
             this.axios.get(url).then(response => {
                 this.types = response.data
@@ -62,50 +112,19 @@ export default {
                 this.templates = response.data
             }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
         },
-                
-        setParams(sample) {
-            var url = `/api/sample/${sample}`
-            this.axios.get(url).then(response => {
-                for (let i = 0; i < this.types.length; i++) {
-                    if (this.types[i].id == response.data.type_id) {
-
-                        this.selectTypeIndex = i;
-
-                        var url = `/api/type/${this.types[this.selectTypeIndex].id}/sample`
-                        this.axios.get(url).then(response => {
-                            this.templates = response.data
-                            for (let i = 0; i < this.templates.length; i++) {
-                                if (this.templates[i].id == this.objectData.sample_id) {
-                                    console.log(i)
-                                    this.selectTemplateIndex = i;
-                                }
-                            }
-                        }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
-                    }
-                }
-            }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
-        },
-        setSampleId() {
+        loadAccessTemplate() {
             this.objectData.sample_id = this.templates[this.selectTemplateIndex].id;
-        },
-        loadAccess() {
-            if (this.action == 'edit') {
-                var url = `/api/client/${this.$route.params.clientId}/access/${this.$route.params.accessId}`
-                this.axios.get(url).then(response => {
-                    this.objectData = response.data
-                    this.objectData.data = JSON.stringify(response.data.data)
-                    this.setParams(this.objectData.sample_id)
-                }).catch(error => { this.$noty.info('Неудалось получить доступ'); });
-            }
-            else if (this.action == 'create') {
-                console.log('create')
-                this.objectData = {
-                    name: '',
-                    client_id: this.$route.params.clientId,
-                    sample_id: 0,
-                    data: ''
+
+            var url = `/api/sample/${this.objectData.sample_id}`
+            this.axios.get(url).then(response => {
+                this.currentTemplate = response.data
+                let stringData = JSON.stringify(this.currentTemplate.data)
+                let arrFileds = stringData.match(/(?<=%)\w+(?=%)/g);
+                for (let field in arrFileds) {
+                    this.objectData.data[field] = ''
                 }
-            }
+                this.dataField = arrFileds;
+            }).catch(error => { this.$noty.info('Неудалось получить шаблон'); });
         },
         addAccess() {
             if (this.action == 'create') {
@@ -114,7 +133,7 @@ export default {
                     name: this.objectData.name,
                     client_id: this.objectData.client_id,
                     sample_id: this.objectData.sample_id,
-                    data: JSON.parse(this.objectData.data)
+                    data: this.objectData.data
                 }).then(response => {
                     this.onBack()
                 }).catch(error => {
@@ -127,7 +146,7 @@ export default {
                     name: this.objectData.name,
                     client_id: this.objectData.client_id,
                     sample_id: this.objectData.sample_id,
-                    data: JSON.parse(this.objectData.data)
+                    data: this.objectData.data
                 }).then(response => {
                     this.onBack()
                 }).catch(error => {
@@ -156,7 +175,7 @@ export default {
     created() {
         this.setAction()
         this.loadAccess()
-        this.loadAccessType()
+        this.loadAccessTypes()
         this.loadAccessTypeTemplates()
     }
 }

@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         AccessType::create([
             'name' => 'ssh',
             'data' => json_encode([
-                ['name' => 'host', 'type' => 'ifstring', 'condition' => '/((\d{1,3}\.){3}\d{1,3}|(\w+\.)*\w):\d{1,5}/'],
+                ['name' => 'host', 'type' => 'ifstring', 'condition' => '/((\d{1,3}\.){3}\d{1,3}|(\w+\.)*\w+)(:\d{1,5})?/'],
                 ['name' => 'user', 'type' => 'string'],
                 [
                     'name' => 'key',

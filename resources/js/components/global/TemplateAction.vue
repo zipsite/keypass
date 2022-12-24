@@ -11,10 +11,10 @@
         <div class="activity-content">
             <GroupInputs label="Основное">
                 <Input v-model="objectData.name" label="Имя"></Input>
-                <Input v-model="objectData.type_id" label="id типа"></Input>
-                <GroupInputs label="Данные для заполнения">
-                    <textarea v-model="objectData.data" class="cos-input"></textarea>
-                </GroupInputs>
+                <Selector v-model="selectTypeIndex" @input="setTypeId" label="Выбор типа" :variants="types"></Selector>
+                <EachGroupInputs :item="currentType.data" @input="addObject" :value="objectData.data"
+                    label="Данные для заполнения">
+                </EachGroupInputs>
                 <Button text="Сохранить" @b-click="addTemplate"></Button>
             </GroupInputs>
             <GroupInputs label="Важное">
@@ -28,8 +28,14 @@
 export default {
     data() {
         return {
+            types: [{ id: 1, name: ' ' }],
+            selectTypeIndex: 0,
+
+            currentType: {},
+
             objectData: {},
-            action: ''
+            action: '',
+            check: ''
         }
     },
     methods: {
@@ -39,22 +45,64 @@ export default {
         setAction() {
             this.action = this.$route.params.action
         },
-        loadTemplate() {
+        addObject(e) {
+            this.$set(this.objectData.data, e.key, e.value)
+            // console.log(this)
+            console.log(this.objectData.data)
+        },
+        loadTemplates() {
             if (this.action == 'edit') {
                 var url = `/api/sample/${this.$route.params.templateId}`
                 this.axios.get(url).then(response => {
                     this.objectData = response.data
-                    this.objectData.data = JSON.stringify(response.data.data)
+                    this.setParams();
                 }).catch(error => { this.$noty.info('Неудалось получить шаблон'); });
             }
             else if (this.action == 'create') {
                 console.log('create')
                 this.objectData = {
                     name: '',
-                    type_id: '',
-                    data: ''
+                    type_id: 1,
+                    data: {}
                 }
+                this.setParams();
+
             }
+        },
+        setParams() {
+            var url = `/api/type/`
+            this.axios.get(url).then(response => {
+                this.types = response.data
+
+                for (let i = 0; i < this.types.length; i++) {
+                    if (this.types[i].id == this.objectData.type_id) {
+                        this.selectTypeIndex = i;
+
+                        var url = `/api/type/${this.types[this.selectTypeIndex].id}`
+                        this.axios.get(url).then(response => {
+                            this.currentType = response.data
+                        }).catch(error => { this.$noty.info('Неудалось получить тип'); });
+                    }
+                }
+            }).catch(error => { this.$noty.info('Неудалось получить типы'); });
+        },
+        setTypeId() {
+            Vue.delete(this.objectData, 'data')
+            this.$set(this.objectData, 'data', {})
+            this.objectData.type_id = this.types[this.selectTypeIndex].id
+            this.loadType();
+        },
+        loadAccessTypes() {
+            var url = `/api/type/`
+            this.axios.get(url).then(response => {
+                this.types = response.data
+            }).catch(error => { this.$noty.info('Неудалось получить типы'); });
+        },
+        loadType() {
+            var url = `/api/type/${this.types[this.selectTypeIndex].id}`
+            this.axios.get(url).then(response => {
+                this.currentType = response.data
+            }).catch(error => { this.$noty.info('Неудалось получить тип'); });
         },
         addTemplate() {
             if (this.action == 'create') {
@@ -62,10 +110,20 @@ export default {
                 this.axios.post(url, {
                     name: this.objectData.name,
                     type_id: this.objectData.type_id,
-                    data: JSON.parse(this.objectData.data)
+                    data: this.objectData.data
                 }).then(response => {
-                    this.onBack()
+                    if (Object.hasOwn(response.data, 1)) {
+                        if (Object.hasOwn(response.data[1], 'valid')) {
+                            this.$noty.info('Невалидный шаблон');
+                            console.error(response.data)
+                        }
+                    }
+                    else {
+                        this.onBack()
+                    }
                 }).catch(error => {
+                    console.log(error)
+                    console.log("error?")
                     this.$noty.info('Не удалось создать шаблон');
                 });
             }
@@ -74,7 +132,7 @@ export default {
                 this.axios.put(url, {
                     name: this.objectData.name,
                     type_id: this.objectData.type_id,
-                    data: JSON.parse(this.objectData.data)
+                    data: this.objectData.data
                 }).then(response => {
                     this.onBack()
                 }).catch(error => {
@@ -102,7 +160,9 @@ export default {
     },
     created() {
         this.setAction()
-        this.loadTemplate()
+        this.loadTemplates()
+        // this.loadAccessTypes()
+        // this.loadType()
     }
 }
 </script>
