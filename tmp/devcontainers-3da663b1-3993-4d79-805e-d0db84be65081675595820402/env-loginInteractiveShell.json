@@ -1,0 +1,15 @@
+{
+	"LS_COLORS": "",
+	"LESSCLOSE": "/usr/bin/lesspipe %s %s",
+	"HOSTNAME": "7d7fdc4b19fb",
+	"REMOTE_CONTAINERS_SOCKETS": "[\"/tmp/vscode-ssh-auth-6119ef0da03552e9350d40ef8dd3b00564562037.sock\"]",
+	"HOME": "/root",
+	"DEBIAN_FRONTEND": "noninteractive",
+	"NODEJS_VERSION": "8",
+	"REMOTE_CONTAINERS_IPC": "/tmp/vscode-remote-containers-ipc-6119ef0da03552e9350d40ef8dd3b00564562037.sock",
+	"PHP_VERSION": "7.4",
+	"SHLVL": "1",
+	"PATH": "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+	"LESSOPEN": "| /usr/bin/lesspipe %s",
+	"_": "/bin/cat"
+}

@@ -12,9 +12,7 @@
             <GroupInputs label="Основное">
                 <Input v-model="objectData.name" label="Имя"></Input>
                 <Selector v-model="selectTypeIndex" @input="setTypeId" label="Выбор типа" :variants="types"></Selector>
-                <EachGroupInputs :item="currentType.data" @input="addObject" :value="objectData.data"
-                    label="Данные для заполнения">
-                </EachGroupInputs>
+                <SpoilerBox name="Образец шаблона" :text="currentType"></SpoilerBox>
                 <Button text="Сохранить" @b-click="addTemplate"></Button>
             </GroupInputs>
             <GroupInputs label="Важное">
@@ -98,6 +96,7 @@ export default {
                 this.types = response.data
             }).catch(error => { this.$noty.info('Неудалось получить типы'); });
         },
+
         loadType() {
             var url = `/api/type/${this.types[this.selectTypeIndex].id}`
             this.axios.get(url).then(response => {
@@ -157,6 +156,9 @@ export default {
                 return 'Редактирование шаблона'
             }
         },
+        spoilerText() {
+            
+        }
     },
     created() {
         this.setAction()

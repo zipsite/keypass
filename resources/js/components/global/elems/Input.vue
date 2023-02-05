@@ -4,7 +4,7 @@
             <p class="you-label-small">{{ label }}</p>
         </div>
         <div class="content">
-            <input class="text-place you-body-large" :value="value" @input="$emit('input', $event.target.value)"
+            <input class="text-place you-body-large" :type="type" :value="value" @input="$emit('input', $event.target.value)"
                 @focus="onFocus(true)" @blur="onFocus(false)">
         </div>
         <div v-show="supportText != ''" class="support">
@@ -26,6 +26,10 @@ export default {
         label: {
             type: String,
             default: "Label"
+        },
+        type: {
+            type: String,
+            default: "text"
         }
 
     },

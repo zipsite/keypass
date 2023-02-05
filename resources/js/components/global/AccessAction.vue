@@ -110,6 +110,7 @@ export default {
             var url = `/api/type/${this.types[this.selectTypeIndex].id}/sample`
             this.axios.get(url).then(response => {
                 this.templates = response.data
+                this.loadAccessTemplate();
             }).catch(error => { this.$noty.info('Неудалось получить шаблоны'); });
         },
         loadAccessTemplate() {

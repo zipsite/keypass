@@ -1,12 +1,12 @@
 <template>
-    <div :class="buttonStyle" @click="$emit('b-click', idData)">
+    <button :class="buttonStyle" @click="$emit('b-click', idData)">
         <div class="you-state-layer">
             <span v-show="withIcon" class="icon-18">{{ icon }}</span>
             <p class="you-title-small">
                 {{ text }}
             </p>
         </div>
-    </div>
+    </button>
 </template>
 
 <script>
@@ -74,6 +74,8 @@ export default {
 
 <style>
 .you-button {
+    background:none;
+    border: none;
     user-select: none;
     cursor: pointer;
     overflow: hidden;

@@ -1,9 +1,9 @@
 <template>
-    <div class="you-icon-button" @click="$emit('b-i-click', idData)">
+    <button class="you-icon-button" @click="$emit('b-i-click', idData)">
         <div class="you-state-layer">
             <span class="icon-24">{{ icon }}</span>
         </div>
-    </div>
+    </button>
 </template>
 
 <script>
@@ -26,6 +26,8 @@ export default {
 
 <style>
 .you-icon-button {
+    border: none;
+    background:none;
     user-select: none;
     cursor: pointer;
     color: var(--on-primary-container);

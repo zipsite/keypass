@@ -1,28 +1,20 @@
 
 <template>
     <div class="you-box">
-        <Selector></Selector>
+        <SpoilerBox name="Образец шаблона" text="object: {}"></SpoilerBox>
     </div>
 </template>
 
 <script>
 export default {
     data() {
-        return {
-        }
+        return {};
     },
-    methods: {
-
-    },
-    watch: {
-
-    },
+    methods: {},
+    watch: {},
     created() {
-
     },
-    computed: {
-
-    },
+    computed: {},
 }
 </script>
 

@@ -1,8 +1,8 @@
 <template>
     <div class="wrapper-login">
         <div class="form-container">
-            <Input v-model="email" label="Email"></Input>
-            <Input v-model="password" label="Пароль"></Input>
+            <Input v-model="email" label="Email" type="email"></Input>
+            <Input v-model="password" label="Пароль" type="password"></Input>
             <Button text="Войти" @b-click="submitLogin"></Button>
         </div>
     </div>
